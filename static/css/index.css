@@ -1,0 +1,129 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+}
+
+#header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: left;
+}
+
+#fileConvertText {
+    margin-left: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#main {
+    margin-top: 60px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#fileSection {
+    width: 100%;
+    max-width: 600px;
+    /* Adjust as needed */
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#fileFormatSelect,
+#targetFormatSelect {
+    margin-right: 10px;
+    padding: 10px;
+}
+
+#convertLabel {
+    margin-right: 10px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+#fileInputLabel {
+    display: block;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#fileInput {
+    display: none;
+}
+
+#fileList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#fileList li {
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+#startButton {
+    width: 100%;
+    max-width: 200px;
+    /* Adjust as needed */
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#statusSection {
+    width: 100%;
+    max-width: 600px;
+    /* Adjust as needed */
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#statusText {
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+#processStatus {
+    font-size: 16px;
+    color: #e74c3c;
+    margin-top: 10px;
+}
+
+#footer {
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+#footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}

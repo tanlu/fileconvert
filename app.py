@@ -3,7 +3,6 @@ import os
 import platform
 from pdf2docx import Converter
 import docx2pdf
-import pythoncom
 
 
 app = Flask(__name__)
@@ -24,6 +23,10 @@ img2 = ".jpeg"
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'success': 'test'})
 
 # 文件上传
 @app.route('/upload', methods=['POST'])
@@ -179,4 +182,4 @@ def get_file_name_with_extension(file_path):
     return file_name+file_extension
 
 if __name__ == '__main__':
-    app.run("127.0.0.1", "8891",True)
+    app.run("0.0.0.0", "80",False)
