@@ -1,8 +1,9 @@
-from pathlib import PurePath
+import platform
 
-from docx2pdf import convert
 from flask import Flask, request, jsonify, render_template, send_file
-from pdf2docx import Converter
+
+from doc2pdfself import convertPdf2Docx, convert_docx_to_pdf, convertPdf2Doc
+from fileutils import get_file_name_with_extension
 
 app = Flask(__name__)
 
@@ -72,60 +73,14 @@ def fileconvert():
     if ("." + source_type).lower() == pdf1.lower() and ("." + end_type).lower() == doc2.lower():
         print("pdf-----docx  start...")
         return convertPdf2Docx(file_path, file_name)
+    # pdf-doc
+    if ("." + source_type).lower() == pdf1.lower() and ("." + end_type).lower() == doc1.lower():
+        print("pdf-----doc  start...")
+        return convertPdf2Doc(file_path, file_name)
     # docx->pdf
     elif ("." + source_type).lower() == doc2.lower() and ("." + end_type).lower() == pdf1.lower():
         return convert_docx_to_pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
-
-
-# pdf - docx
-@app.route('/convertPdf2Docx', methods=['GET'])
-def convertPdf2Docx(file_path, file_name):
-    filePath = pdf2Docx(file_path, file_name)
-    re = {"file": filePath, "success": True}
-    return jsonify(re);
-
-
-# pdf - doc
-@app.route('/convertPdf2Doc', methods=['GET'])
-def convertPdf2Doc():
-    # name = request.args.get('name', 'Guest')
-    file_path = request.args.get('filepath')
-    file_name = request.args.get("filename")
-
-    filePath = pdf2Doc(file_path, file_name)
-    re = {"filename": filePath, "file_path": filePath}
-    return True
-
-
-#  pdf - docx
-def pdf2Docx(file_path, file_name):
-    # convert pdf to docx
-    print(file_path)
-    print(file_name)
-    cv = Converter(file_path + file_name)
-    filename = get_file_name_no_extension(file_name)
-    cv.convert(file_path + filename + doc2)  # all pages by default
-    cv.close()
-    return file_path + filename + doc2
-
-
-#  pdf - doc
-def pdf2Doc(file_path, file_name):
-    # convert pdf to docx
-    cv = Converter(file_path + file_name)
-    filename = get_file_name_no_extension(file_name)
-    cv.convert(file_path + filename + doc1)  # all pages by default
-    cv.close()
-    return file_path + filename + doc1
-
-
-# docx - pdf
-def convert_docx_to_pdf(file_path, file_name):
-    filename = get_file_name_no_extension(file_name)
-    convert(file_path + file_name, file_path + filename + pdf1)
-    re = {"file": file_path + filename + pdf1, "success": True}
-    return jsonify(re)
 
 
 @app.route('/downloadfile', methods=['GET'])
@@ -133,38 +88,6 @@ def download_file():
     file_path = request.args.get("filepath")
     filename = get_file_name_with_extension(file_path)
     return send_file(file_path, as_attachment=True, download_name=filename)
-
-
-# 获取带后缀的文件名
-def get_file_name_with_extension(file_path):
-    # 使用 PurePath 封装文件路径
-    path = PurePath(file_path)
-
-    # 获取文件名（带后缀）
-    file_name_with_extension = path.name
-
-    return file_name_with_extension
-
-
-# 获取文件后缀
-def get_file_extension(file_path):
-    # 使用 split() 方法，将文件路径按照 '.' 分割，并取最后一部分作为后缀名
-    extension = file_path.split('.')[-1]
-    return extension
-
-
-# 没有后缀的文件名
-def get_file_name_no_extension(file_path):
-    # 使用 PurePath 封装文件路径
-    path = PurePath(file_path)
-
-    # 获取文件名（带后缀）
-    file_name_with_extension = path.name
-
-    # 使用 rsplit() 方法，将文件名从右边按照 '.' 分割，最多分割一次
-    file_name_without_extension = file_name_with_extension.rsplit('.', 1)[0]
-
-    return file_name_without_extension
 
 
 # 获取当前系统
