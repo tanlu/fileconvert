@@ -1,9 +1,6 @@
-import os
-import platform
+from pathlib import PurePath
 
-import docx2pdf
-import pythoncom
-from colorama import win32
+from docx2pdf import convert
 from flask import Flask, request, jsonify, render_template, send_file
 from pdf2docx import Converter
 
@@ -52,7 +49,7 @@ def upload_file():
             if s == 1:
                 file_path = wpath
             elif s == 2:
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], fname)
+                file_path = app.config['UPLOAD_FOLDER'] + fname
             save_path = file_path + fname
             file.save(save_path)
     # 返回文件保存的路径或其他信息
@@ -71,11 +68,13 @@ def fileconvert():
     print(file_name)
     print(source_type)
     print(end_type)
-    if ("."+source_type).lower() == pdf1.lower() and ("."+end_type).lower() == doc2.lower():  # pdf-docx
+    # pdf-docx
+    if ("." + source_type).lower() == pdf1.lower() and ("." + end_type).lower() == doc2.lower():
         print("pdf-----docx  start...")
         return convertPdf2Docx(file_path, file_name)
-    elif ("."+source_type).lower() == doc2.lower() and ("."+end_type).lower() == pdf1.lower():
-        return convert_docx_to_pdf()
+    # docx->pdf
+    elif ("." + source_type).lower() == doc2.lower() and ("." + end_type).lower() == pdf1.lower():
+        return convert_docx_to_pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
@@ -105,7 +104,7 @@ def pdf2Docx(file_path, file_name):
     print(file_path)
     print(file_name)
     cv = Converter(file_path + file_name)
-    filename, file_extension = os.path.splitext(os.path.basename(file_name))
+    filename = get_file_name_no_extension(file_name)
     cv.convert(file_path + filename + doc2)  # all pages by default
     cv.close()
     return file_path + filename + doc2
@@ -115,65 +114,18 @@ def pdf2Docx(file_path, file_name):
 def pdf2Doc(file_path, file_name):
     # convert pdf to docx
     cv = Converter(file_path + file_name)
-    filename, file_extension = os.path.splitext(os.path.basename(file_name))
+    filename = get_file_name_no_extension(file_name)
     cv.convert(file_path + filename + doc1)  # all pages by default
     cv.close()
     return file_path + filename + doc1
 
 
-# doc - pdf
-@app.route('/convertDocx2PDF', methods=['GET'])
-def convert_docx_to_pdf(fi):
-    file_path = request.args.get('filepath')
-    file_name = request.args.get("filename")
-    filename = os.path.splitext(os.path.basename(file_name))[0]
-    # filename, file_extension = os.path.splitext(os.path.basename(file_name))
-    print(file_path + file_name)
-    print(file_path + filename + pdf1)
-    pythoncom.CoInitialize()
-    docx2pdf.convert(file_path + file_name, file_path + filename + pdf1)
-    # test.convert_to_pdf(file_path + file_name, file_path + filename + pdf1)
-    re = {"filename": file_path + filename + pdf1}
+# docx - pdf
+def convert_docx_to_pdf(file_path, file_name):
+    filename = get_file_name_no_extension(file_name)
+    convert(file_path + file_name, file_path + filename + pdf1)
+    re = {"file": file_path + filename + pdf1, "success": True}
     return jsonify(re)
-
-
-@app.route('/convertDoc2PDF', methods=['GET'])
-def convertDoc2PDF():
-    file_path = request.args.get('filepath')
-    file_name = request.args.get("filename")
-    filename = os.path.splitext(os.path.basename(file_name))[0]
-    # filename, file_extension = os.path.splitext(os.path.basename(file_name))
-    print(file_path + file_name)
-    print(file_path + filename + pdf1)
-    pythoncom.CoInitialize()
-    # doc2pdf.convert(file_path + file_name, file_path + filename + pdf1)
-    convert_doc_to_pdf(file_path + file_name, file_path + filename + pdf1)
-    re = {"filename": file_path + filename + pdf1}
-    return jsonify(re)
-
-
-def convert_doc_to_pdf(input_path, output_path):
-    # 创建Word应用程序实例
-    word_app = win32.gencache.EnsureDispatch('Word.Application')
-    # 设置应用程序可见性为False（不显示Word界面）
-    word_app.Visible = False
-    try:
-        # 打开Word文档
-        doc = word_app.Documents.Open(input_path)
-        # 保存为PDF
-        doc.SaveAs(output_path, FileFormat=17)
-        doc.Close()
-        return True
-    except Exception as e:
-        print("转换失败：" + str(e))
-        return False
-    finally:
-        # 关闭Word应用程序
-        word_app.Quit()
-    return True
-
-
-# pdf - png
 
 
 @app.route('/downloadfile', methods=['GET'])
@@ -185,13 +137,34 @@ def download_file():
 
 # 获取带后缀的文件名
 def get_file_name_with_extension(file_path):
-    # 提取文件名（带路径）
-    file_name_with_path = os.path.basename(file_path)
+    # 使用 PurePath 封装文件路径
+    path = PurePath(file_path)
 
-    # 分离文件名和文件扩展名
-    file_name, file_extension = os.path.splitext(file_name_with_path)
+    # 获取文件名（带后缀）
+    file_name_with_extension = path.name
 
-    return file_name + file_extension
+    return file_name_with_extension
+
+
+# 获取文件后缀
+def get_file_extension(file_path):
+    # 使用 split() 方法，将文件路径按照 '.' 分割，并取最后一部分作为后缀名
+    extension = file_path.split('.')[-1]
+    return extension
+
+
+# 没有后缀的文件名
+def get_file_name_no_extension(file_path):
+    # 使用 PurePath 封装文件路径
+    path = PurePath(file_path)
+
+    # 获取文件名（带后缀）
+    file_name_with_extension = path.name
+
+    # 使用 rsplit() 方法，将文件名从右边按照 '.' 分割，最多分割一次
+    file_name_without_extension = file_name_with_extension.rsplit('.', 1)[0]
+
+    return file_name_without_extension
 
 
 # 获取当前系统
