@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, render_template, send_file
 from doc2pdfself import convertPdf2Docx, docx_to_pdf, convertPdf2Doc
 from fileutils import get_file_name_with_extension
 from image2imageself import image_to_pdf
+from txt2docself import txt_to_doc, txt_to_docx, docx_to_txt
 
 app = Flask(__name__)
 
@@ -13,9 +14,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 wpath = "D:/test/"
 lpath = "/data/file/"
 # 文件格式
-doc1 = ".doc"
-doc2 = ".docx"
-pdf1 = ".pdf"
+TYPE_DOC = ".doc"
+TYPE_DOCX = ".docx"
+TYPE_PDF = ".pdf"
+TYPE_TXT = '.txt'
 # 常用的图片格式
 common_image_formats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.ico', '.ppm', '.pgm',
                         '.pbm', '.pnm', '.jp2', '.j2k', '.jpf', '.jpx', '.jpm']
@@ -72,22 +74,34 @@ def fileconvert():
     print(source_type)
     print(end_type)
     # pdf-docx
-    if ("." + source_type).lower() == pdf1.lower() and ("." + end_type).lower() == doc2.lower():
+    if ("." + source_type).lower() == TYPE_PDF.lower() and ("." + end_type).lower() == TYPE_DOCX.lower():
         print("pdf-----docx  start...")
         return convertPdf2Docx(file_path, file_name)
     # pdf-doc
-    if ("." + source_type).lower() == pdf1.lower() and ("." + end_type).lower() == doc1.lower():
+    if ("." + source_type).lower() == TYPE_PDF.lower() and ("." + end_type).lower() == TYPE_DOC.lower():
         print("pdf-----doc  start...")
         return convertPdf2Doc(file_path, file_name)
     # docx->pdf
-    elif ("." + source_type).lower() == doc2.lower() and ("." + end_type).lower() == pdf1.lower():
+    elif ("." + source_type).lower() == TYPE_DOCX.lower() and ("." + end_type).lower() == TYPE_PDF.lower():
         return docx_to_pdf(file_path, file_name)
     # doc->pdf
-    elif ("." + source_type).lower() == doc1.lower() and ("." + end_type).lower() == pdf1.lower():
+    elif ("." + source_type).lower() == TYPE_DOC.lower() and ("." + end_type).lower() == TYPE_PDF.lower():
         return docx_to_pdf(file_path, file_name)
     # 图片 -> PDF
-    elif ("." + source_type).lower() in common_image_formats and ("." + end_type).lower() == pdf1.lower():
+    elif ("." + source_type).lower() in common_image_formats and ("." + end_type).lower() == TYPE_PDF.lower():
         return image_to_pdf(file_path, file_name)
+    # txt - doc
+    elif ("." + source_type).lower() == TYPE_TXT.lower() and ("." + end_type).lower() == TYPE_DOC.lower():
+        return txt_to_doc(file_path, file_name)
+    # txt - docx
+    elif ("." + source_type).lower() == TYPE_TXT.lower() and ("." + end_type).lower() == TYPE_DOCX.lower():
+        return txt_to_docx(file_path, file_name)
+    # docx - txt
+    elif ("." + source_type).lower() == TYPE_DOCX.lower() and ("." + end_type).lower() == TYPE_TXT.lower():
+        return docx_to_txt(file_path, file_name)
+    # doc - txt
+    elif ("." + source_type).lower() == TYPE_DOC.lower() and ("." + end_type).lower() == TYPE_TXT.lower():
+        return docx_to_txt(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
