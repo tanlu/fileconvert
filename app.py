@@ -50,7 +50,7 @@ def upload_file():
             if s == 1:
                 file_path = wpath
             elif s == 2:
-                file_path = app.config['UPLOAD_FOLDER'] + fname
+                file_path = lpath
             save_path = file_path + fname
             file.save(save_path)
     # 返回文件保存的路径或其他信息
@@ -80,6 +80,9 @@ def fileconvert():
     # docx->pdf
     elif ("." + source_type).lower() == doc2.lower() and ("." + end_type).lower() == pdf1.lower():
         return convert_docx_to_pdf(file_path, file_name)
+    # doc->pdf
+    elif ("." + source_type).lower() == doc1.lower() and ("." + end_type).lower() == pdf1.lower():
+        return convert_docx_to_pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
@@ -104,5 +107,5 @@ def getSys():
 
 
 if __name__ == '__main__':
-    # app.run("0.0.0.0", "80",False)
-    app.run("localhost", "80", True)
+    app.run("0.0.0.0", "80", False)
+    # app.run("localhost", "80", True)

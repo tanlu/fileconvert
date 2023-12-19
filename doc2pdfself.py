@@ -1,7 +1,8 @@
+import subprocess
+
 from flask import jsonify
 from pdf2docx import Converter
 from fileutils import get_file_extension, get_file_name_no_extension, get_file_name_with_extension
-from docx2pdf import convert
 
 UPLOAD_FOLDER = '/data/file/'  # 设置文件上传的目标文件夹
 wpath = "D:/test/"
@@ -52,7 +53,32 @@ def pdf2Doc(file_path, file_name):
 
 #  ===================================DOCX - PDF===================================
 def convert_docx_to_pdf(file_path, file_name):
+    # filename = get_file_name_no_extension(file_name)
+    # docx2pdf.convert(file_path + file_name, file_path + filename + pdf1)
+    # re = {"file": file_path + filename + pdf1, "success": True}
+    # return jsonify(re)
+    # cmd = "soffice --headless --invisible --convert-to pdf " + file_name
+    cmd = "libreoffice --convert-to pdf --outdir " + file_path + " " + file_path + file_name
+    p = subprocess.call(cmd, shell=True)
+    for line in p.stdout.readlines():
+        print("returned_output:", line)
+    p.wait()
     filename = get_file_name_no_extension(file_name)
-    convert(file_path + file_name, file_path + filename + pdf1)
     re = {"file": file_path + filename + pdf1, "success": True}
     return jsonify(re)
+
+
+#  ===================================DOC - PDF===================================
+def convert_doc_to_pdf(file_path, file_name):
+    cmd = "soffice --headless --invisible --convert-to pdf " + file_name
+    p = subprocess.call(cmd, shell=True)
+    for line in p.stdout.readlines():
+        print("returned_output:", line)
+    p.wait()
+    filename = get_file_name_no_extension(file_name)
+    re = {"file": file_path + filename + pdf1, "success": True}
+    return jsonify(re)
+    # filename = get_file_name_no_extension(file_name)
+    # doc2pdf.convert(file_path + file_name, file_path + filename + pdf1)
+    # re = {"file": file_path + filename + pdf1, "success": True}
+    # return jsonify(re)
