@@ -24,6 +24,7 @@
                 <li>DOCX->PDF</li>
                 <li>PDF->DOC</li>
                 <li>PDF->DOCX</li>
+                <li>图片->PDF</li>
             </ol>
         </div>
         <div id="fileSection">
@@ -195,7 +196,7 @@
             var file_temp = null;
             for (const file of event.target.files) {
                 const listItem = document.createElement('li');
-                listItem.textContent = file.name+"-----";
+                listItem.textContent = file.name;
                 // 记录最后一个File
                 // 后缀名
                 var extension_name = getFileExtension(file.name);

@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, render_template, send_file
 
 from doc2pdfself import convertPdf2Docx, docx_to_pdf, convertPdf2Doc
 from fileutils import get_file_name_with_extension
+from image2imageself import image_to_pdf
 
 app = Flask(__name__)
 
@@ -15,8 +16,9 @@ lpath = "/data/file/"
 doc1 = ".doc"
 doc2 = ".docx"
 pdf1 = ".pdf"
-img1 = ".png"
-img2 = ".jpeg"
+# 常用的图片格式
+common_image_formats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.ico', '.ppm', '.pgm',
+                        '.pbm', '.pnm', '.jp2', '.j2k', '.jpf', '.jpx', '.jpm']
 
 
 # 首页
@@ -83,6 +85,9 @@ def fileconvert():
     # doc->pdf
     elif ("." + source_type).lower() == doc1.lower() and ("." + end_type).lower() == pdf1.lower():
         return docx_to_pdf(file_path, file_name)
+    # 图片 -> PDF
+    elif ("." + source_type).lower() in common_image_formats and ("." + end_type).lower() == pdf1.lower():
+        return image_to_pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
