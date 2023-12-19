@@ -2,7 +2,7 @@ import platform
 
 from flask import Flask, request, jsonify, render_template, send_file
 
-from doc2pdfself import convertPdf2Docx, convert_docx_to_pdf, convertPdf2Doc
+from doc2pdfself import convertPdf2Docx, docx_to_pdf, convertPdf2Doc
 from fileutils import get_file_name_with_extension
 
 app = Flask(__name__)
@@ -79,10 +79,10 @@ def fileconvert():
         return convertPdf2Doc(file_path, file_name)
     # docx->pdf
     elif ("." + source_type).lower() == doc2.lower() and ("." + end_type).lower() == pdf1.lower():
-        return convert_docx_to_pdf(file_path, file_name)
+        return docx_to_pdf(file_path, file_name)
     # doc->pdf
     elif ("." + source_type).lower() == doc1.lower() and ("." + end_type).lower() == pdf1.lower():
-        return convert_docx_to_pdf(file_path, file_name)
+        return docx_to_pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
