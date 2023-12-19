@@ -69,6 +69,7 @@ def docx_to_pdf(file_path, file_name):
     try:
         subprocess.check_call(cmd.split())
         print("Conversion from DOCX to PDF completed successfully.")
-        return pdf_path
+        re = {"file": pdf_path, "success": True}
+        return jsonify(re)
     except subprocess.CalledProcessError as e:
         print("An error occurred during the conversion: ", e)
