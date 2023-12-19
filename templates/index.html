@@ -12,214 +12,215 @@
 </head>
 
 <body>
-    <div id="header">
-        <div id="fileConvertText">FileConvert</div>
+<div id="header">
+    <div id="fileConvertText">FileConvert</div>
+</div>
+
+<div id="main">
+    <div id="center_tip">
+        <div>下拉选项不管用，目前支持的:</div>
+        <ol id='gs' style="margin: 10px;">
+            <li>DOC<->PDF</li>
+            <li>DOCX<->PDF</li>
+            <li>图片->PDF</li>
+            <li>txt<->PDF</li>
+        </ol>
     </div>
+    <div id="fileSection">
+        <div id="center_top1">
+            <span>当前文件格式:</span><span id="source_file"></span>
+            <span id="convertLabel">转换成</span>
+            <select id="targetFormatSelect">
+                <option value="PDF">PDF</option>
+                <option value="DOC">DOC</option>
+                <option value="DOCX">DOCX</option>
+                <option value="XLS">XLS</option>
+                <option value="XLSX">XLSX</option>
+                <option value="PNG">PNG</option>
+                <option value="JPEG">JPEG</option>
+                <option value="BMP">BMP</option>
+                <option value="SVG">SVG</option>
+                <!-- Add more file formats as needed -->
+            </select>
+        </div>
 
-    <div id="main">
-        <div id="center_tip">
-            <div>下拉选项不管用，目前支持的:</div>
-            <ol id='gs' style="margin: 10px;">
-                <li>DOC->PDF</li>
-                <li>DOCX->PDF</li>
-                <li>PDF->DOC</li>
-                <li>PDF->DOCX</li>
-                <li>图片->PDF</li>
-            </ol>
-        </div>
-        <div id="fileSection">
-            <div id="center_top1">
-                <span>当前文件格式:</span><span id="source_file"></span>
-                <span id="convertLabel">转换成</span>
-                <select id="targetFormatSelect">
-                    <option value="PDF">PDF</option>
-                    <option value="DOC">DOC</option>
-                    <option value="DOCX">DOCX</option>
-                    <option value="XLS">XLS</option>
-                    <option value="XLSX">XLSX</option>
-                    <option value="PNG">PNG</option>
-                    <option value="JPEG">JPEG</option>
-                    <option value="BMP">BMP</option>
-                    <option value="SVG">SVG</option>
-                    <!-- Add more file formats as needed -->
-                </select>
-            </div>
-
-            <label for="fileInput" id="fileInputLabel">
-                <span>选择文件</span>
-            </label>
-            <input type="file" id="fileInput" multiple>
-            <ul id="fileList"></ul>
-        </div>
-        <button id="startButton" onclick="startProcess()">开始</button>
-        <div id="statusSection">
-            <p id="statusText">状态</p>
-            <p id="processStatus"></p>
-            <p id="bt_download" style="display: none;"><button id="downloadBtn" onclick="downLoad()">下载</button></p>
-        </div>
+        <label for="fileInput" id="fileInputLabel">
+            <span>选择文件</span>
+        </label>
+        <input type="file" id="fileInput" multiple>
+        <ul id="fileList"></ul>
     </div>
-
-    <div id="footer">
-        <a href="#">联系我</a>
-        <a href="#">邮箱</a>
-        <a href="#">IPC备案</a>
+    <button id="startButton" onclick="startProcess()">开始</button>
+    <div id="statusSection">
+        <p id="statusText">状态</p>
+        <p id="processStatus"></p>
+        <p id="bt_download" style="display: none;">
+            <button id="downloadBtn" onclick="downLoad()">下载</button>
+        </p>
     </div>
+</div>
 
-    <script>
-        //const base_url = "http://localhost:80/"
-        const base_url = "http://47.100.32.67:80/"
-        const upload_url = base_url + "upload"
-        const pdf_docx_url = base_url + "convertPdf2Docx"
-        const fileconvert_url = base_url + "fileconvert"
-        const download_file_url = base_url + "downloadfile"
+<div id="footer">
+    <a href="#">联系我</a>
+    <a href="#">邮箱</a>
+    <a href="#">IPC备案</a>
+</div>
 
-        // 存放转换后的路径的集合
-        const batch = '' // 下载压缩包的时候用，现在还没写接口
-        let converted_file_paths = []
-        // 开始上传和转换
-        function startProcess() {
-            // 清空
-            converted_file_paths = []
-            // 隐藏下载按钮
-            document.getElementById('bt_download').style.display = 'none';
+<script>
+    //const base_url = "http://localhost:80/"
+    const base_url = "http://47.100.32.67:80/"
+    const upload_url = base_url + "upload"
+    const pdf_docx_url = base_url + "convertPdf2Docx"
+    const fileconvert_url = base_url + "fileconvert"
+    const download_file_url = base_url + "downloadfile"
 
-            const processStatus = document.getElementById('processStatus');
-            const fileInput = document.getElementById('fileInput');
+    // 存放转换后的路径的集合
+    const batch = '' // 下载压缩包的时候用，现在还没写接口
+    let converted_file_paths = []
+    // 开始上传和转换
+    function startProcess() {
+        // 清空
+        converted_file_paths = []
+        // 隐藏下载按钮
+        document.getElementById('bt_download').style.display = 'none';
 
-            // 模拟获取选中的文件
-            const files = fileInput.files;
+        const processStatus = document.getElementById('processStatus');
+        const fileInput = document.getElementById('fileInput');
 
-            // 检查是否有文件
-            if (files.length === 0) {
-                alert('请选择文件');
-                return;
+        // 模拟获取选中的文件
+        const files = fileInput.files;
+
+        // 检查是否有文件
+        if (files.length === 0) {
+            alert('请选择文件');
+            return;
+        }
+        // 获取初始格式和要转换的格式
+        var source_type = document.getElementById('source_file').innerText;
+        var end_type = document.getElementById('targetFormatSelect').value;
+        console.log(source_type+"初始格式");
+        console.log(end_type+"目标格式");
+        processStatus.textContent = '上传中...';
+
+        // 使用 Axios 发送文件
+        const formData = new FormData();
+        Array.from(files).forEach((file, index) => {
+            formData.append('file', file)
+        });
+        // 配置
+        let configs = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'token': ''
             }
-            // 获取初始格式和要转换的格式
-            var source_type = document.getElementById('source_file').innerText;
-            var end_type = document.getElementById('targetFormatSelect').value;
-            console.log(source_type+"初始格式");
-            console.log(end_type+"目标格式");
-            processStatus.textContent = '上传中...';
+        }
+        //替换成实际的上传接口
+        axios.post(upload_url, formData, configs)
+            .then(response => {
+                processStatus.textContent = '上传完毕，开始文档转换...';
+                // 开始文档转换
+                d = response.data
+                d_files = d.files
+                d_file_path = d.file_path
 
-            // 使用 Axios 发送文件
-            const formData = new FormData();
-            Array.from(files).forEach((file, index) => {
-                formData.append('file', file)
-            });
-            // 配置
-            let configs = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'token': ''
+                const requests = [];
+
+                // 循环发起异步请求
+                for (let i = 0; i < d_files.length; i++) {
+                    // 发起请求并将Promise对象添加到数组中
+                    url_temp = fileconvert_url + '?filepath=' + d_file_path + '&filename=' + d_files[i]+'&source_type='+source_type+'&end_type='+end_type;
+                    requests.push(axios.get(url_temp));
                 }
-            }
-            //替换成实际的上传接口
-            axios.post(upload_url, formData, configs)
-                .then(response => {
-                    processStatus.textContent = '上传完毕，开始文档转换...';
-                    // 开始文档转换
-                    d = response.data
-                    d_files = d.files
-                    d_file_path = d.file_path
-
-                    const requests = [];
-
-                    // 循环发起异步请求
-                    for (let i = 0; i < d_files.length; i++) {
-                        // 发起请求并将Promise对象添加到数组中
-                        url_temp = fileconvert_url + '?filepath=' + d_file_path + '&filename=' + d_files[i]+'&source_type='+source_type+'&end_type='+end_type;
-                        requests.push(axios.get(url_temp));
-                    }
-                    Promise.all(requests)
-                        .then(responses => {
-                            // 所有请求都成功完成后的处理
-                            responses.forEach(response => {
-                                r = response.data
-                                if(!r.success){
-                                    processStatus.textContent = '暂时不支持的转换类型';
-                                    return;
-                                }else{
-                                    converted_file_paths.push(r.file)
-                                    // 执行循环后面的代码
-                                    console.log('All requests completed');
-                                    processStatus.textContent = '转换完成';
-                                    // 显示下载按钮
-                                    document.getElementById('bt_download').style.display = 'inline-block';
-                                }
-                            });
-                        })
-                        .catch(error => {
-                            // 处理请求中的错误
-                            console.error('Error during requests:', error);
+                Promise.all(requests)
+                    .then(responses => {
+                        // 所有请求都成功完成后的处理
+                        responses.forEach(response => {
+                            r = response.data
+                            if(!r.success){
+                                processStatus.textContent = '暂时不支持的转换类型';
+                                return;
+                            }else{
+                                converted_file_paths.push(r.file)
+                                // 执行循环后面的代码
+                                console.log('All requests completed');
+                                processStatus.textContent = '转换完成';
+                                // 显示下载按钮
+                                document.getElementById('bt_download').style.display = 'inline-block';
+                            }
                         });
+                    })
+                    .catch(error => {
+                        // 处理请求中的错误
+                        console.error('Error during requests:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('上传失败:', error);
+                processStatus.textContent = '上传失败';
+            });
+    }
+    // 开始下载
+    function downLoad(filepath) {
+        if (converted_file_paths.length == 0) {
+            alert('没有要下载的文件');
+            return;
+        }
+        for (const index in converted_file_paths) {
+            // 循环发起异步请求
+            axios({
+                method: 'get',
+                url: download_file_url + '?filepath=' + converted_file_paths[index],  // 替换为你的 Flask 服务地址
+                responseType: 'blob',  // 表示服务器响应的数据类型为二进制流
+            })
+                .then(function (response) {
+                    // 创建一个 Blob 对象，表示二进制数据
+                    const blob = new Blob([response.data]);
+                    //
+                    // 使用 FileSaver.js 或其他方法保存文件
+                    finame = getFileNameFromPath(converted_file_paths[index])
+                    saveAs(blob, finame);
                 })
-                .catch(error => {
-                    console.error('上传失败:', error);
-                    processStatus.textContent = '上传失败';
+                .catch(function (error) {
+                    console.error('Error downloading file: ', error);
                 });
         }
-        // 开始下载
-        function downLoad(filepath) {
-            if (converted_file_paths.length == 0) {
-                alert('没有要下载的文件');
-                return;
-            }
-            for (const index in converted_file_paths) {
-                // 循环发起异步请求
-                axios({
-                    method: 'get',
-                    url: download_file_url + '?filepath=' + converted_file_paths[index],  // 替换为你的 Flask 服务地址
-                    responseType: 'blob',  // 表示服务器响应的数据类型为二进制流
-                })
-                    .then(function (response) {
-                        // 创建一个 Blob 对象，表示二进制数据
-                        const blob = new Blob([response.data]);
-                        //
-                        // 使用 FileSaver.js 或其他方法保存文件
-                        finame = getFileNameFromPath(converted_file_paths[index])
-                        saveAs(blob, finame);
-                    })
-                    .catch(function (error) {
-                        console.error('Error downloading file: ', error);
-                    });
-            }
+    }
+
+
+    // 添加监听
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        const fileList = document.getElementById('fileList');
+        // 显示当前文件格式
+        const source_file = document.getElementById('source_file');
+        fileList.innerHTML = '';
+
+        var file_temp = null;
+        for (const file of event.target.files) {
+            const listItem = document.createElement('li');
+            listItem.textContent = file.name;
+            // 记录最后一个File
+            // 后缀名
+            var extension_name = getFileExtension(file.name);
+            source_file.textContent = extension_name;
+            fileList.appendChild(listItem);
         }
+    });
 
+    function getFileNameFromPath(filePath) {
+        // 使用 split 方法分割路径
+        const pathSegments = filePath.split('/');  // 假设路径使用斜杠作为分隔符
 
-        // 添加监听
-        document.getElementById('fileInput').addEventListener('change', function (event) {
-            const fileList = document.getElementById('fileList');
-            // 显示当前文件格式
-            const source_file = document.getElementById('source_file');
-            fileList.innerHTML = '';
+        // 获取路径的最后一个部分，即文件名
+        const fileNameWithExtension = pathSegments[pathSegments.length - 1];
 
-            var file_temp = null;
-            for (const file of event.target.files) {
-                const listItem = document.createElement('li');
-                listItem.textContent = file.name;
-                // 记录最后一个File
-                // 后缀名
-                var extension_name = getFileExtension(file.name);
-                source_file.textContent = extension_name;
-                fileList.appendChild(listItem);
-            }
-        });
+        return fileNameWithExtension;
+    }
 
-        function getFileNameFromPath(filePath) {
-            // 使用 split 方法分割路径
-            const pathSegments = filePath.split('/');  // 假设路径使用斜杠作为分隔符
-
-            // 获取路径的最后一个部分，即文件名
-            const fileNameWithExtension = pathSegments[pathSegments.length - 1];
-
-            return fileNameWithExtension;
-        }
-
-        // 获取文件后缀名
-		function getFileExtension(filename) {
-		  return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
-		}
-    </script>
+    // 获取文件后缀名
+    function getFileExtension(filename) {
+      return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
+    }
+</script>
 </body>
 
 </html>
