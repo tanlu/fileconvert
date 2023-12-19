@@ -1,9 +1,6 @@
 import subprocess
-from docx import Document
-from io import BytesIO
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-# from weasyprint import HTML
+import subprocess
+import os
 from flask import jsonify
 from pdf2docx import Converter
 from fileutils import get_file_extension, get_file_name_no_extension, get_file_name_with_extension
@@ -56,73 +53,22 @@ def pdf2Doc(file_path, file_name):
 
 
 #  ===================================DOCX - PDF===================================
-# def convert_docx_to_pdf(file_path, file_name):
-#     # filename = get_file_name_no_extension(file_name)
-#     # docx2pdf.convert(file_path + file_name, file_path + filename + pdf1)
-#     # re = {"file": file_path + filename + pdf1, "success": True}
-#     # return jsonify(re)
-#     # cmd = "soffice --headless --invisible --convert-to pdf " + file_name
-#     cmd = "libreoffice --convert-to pdf --outdir " + file_path + " " + file_path + file_name
-#     p = subprocess.call(cmd, shell=True)
-#     for line in p.stdout.readlines():
-#         print("returned_output:", line)
-#     p.wait()
-#     filename = get_file_name_no_extension(file_name)
-#     re = {"file": file_path + filename + pdf1, "success": True}
-#     return jsonify(re)
-
-
-#  ===================================DOC - PDF===================================
-# def convert_doc_to_pdf(file_path, file_name):
-#     cmd = "soffice --headless --invisible --convert-to pdf " + file_name
-#     p = subprocess.call(cmd, shell=True)
-#     for line in p.stdout.readlines():
-#         print("returned_output:", line)
-#     p.wait()
-#     filename = get_file_name_no_extension(file_name)
-#     re = {"file": file_path + filename + pdf1, "success": True}
-#     return jsonify(re)
-#     # filename = get_file_name_no_extension(file_name)
-#     # doc2pdf.convert(file_path + file_name, file_path + filename + pdf1)
-#     # re = {"file": file_path + filename + pdf1, "success": True}
-#     # return jsonify(re)
-
-import subprocess
-import os
-
-
-def docx_to_pdf(docx_path, pdf_path):
+def docx_to_pdf(file_path, file_name):
     # 检查 LibreOffice 是否安装
     if not os.path.exists("/usr/bin/libreoffice"):
         print("LibreOffice is not installed on the system.")
         return
-
+    # 构建PDF 路径
+    filename = get_file_name_no_extension(file_name)
+    pdf_path = file_path + filename + pdf1
     # 构造命令参数
-    cmd = 'libreoffice7.3 --headless --convert-to pdf --outdir {}'.format(os.path.dirname(pdf_path))
-    cmd += ' {}'.format(docx_path)
+    cmd = 'libreoffice --headless --convert-to pdf --outdir {}'.format(os.path.dirname(pdf_path))
+    cmd += ' {}'.format(file_path + file_name)
 
     # 执行命令
     try:
         subprocess.check_call(cmd.split())
         print("Conversion from DOCX to PDF completed successfully.")
+        return pdf_path
     except subprocess.CalledProcessError as e:
         print("An error occurred during the conversion: ", e)
-
-
-def convert_docx_to_pdf2(docx_filename, pdf_filename):
-    # 读取DOCX文档
-    doc = Document(docx_filename)
-
-    # 将DOCX文档内容转换为HTML
-    html_content = ""
-    for paragraph in doc.paragraphs:
-        html_content += f"<p>{paragraph.text}</p>"
-
-    # 生成PDF
-    HTML(string=html_content).write_pdf(pdf_filename)
-
-
-if __name__ == '__main__':
-    docxpath = 'C:\\Users\\39435\\Desktop\\园春.docx'
-    pdfpath = 'C:\\Users\\39435\\Desktop\\园春12.pdf'
-    convert_docx_to_pdf2(docxpath, pdfpath)
