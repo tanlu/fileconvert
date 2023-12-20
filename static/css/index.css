@@ -12,12 +12,19 @@ body {
 	top: 0;
 	width: 100%;
 	text-align: left;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 #fileConvertText {
 	margin-left: 20px;
 	font-size: 24px;
 	font-weight: bold;
+}
+
+#jz {
+	margin-right: 25px;
 }
 
 #main {
@@ -145,6 +152,6 @@ body {
 	/* Add some margin between the select and the labels */
 }
 
-#center_tip{
+#center_tip {
 	margin-bottom: 20px;
 }
