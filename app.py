@@ -6,6 +6,7 @@ from doc2pdfself import convertPdf2Docx, docx_to_pdf, convertPdf2Doc
 from fileutils import get_file_name_with_extension
 from image2imageself import image_to_pdf
 from txt2docself import txt_to_doc, txt_to_docx, docx_to_txt
+from excel2pdfself import excel2pdf
 
 app = Flask(__name__)
 
@@ -18,6 +19,9 @@ TYPE_DOC = ".doc"
 TYPE_DOCX = ".docx"
 TYPE_PDF = ".pdf"
 TYPE_TXT = '.txt'
+TYPE_XLS = ".xls"
+TYPE_XLSX = ".xlsx"
+common_excel_formats = [TYPE_XLS, TYPE_XLSX]
 # 常用的图片格式
 common_image_formats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.ico', '.ppm', '.pgm',
                         '.pbm', '.pnm', '.jp2', '.j2k', '.jpf', '.jpx', '.jpm']
@@ -102,6 +106,9 @@ def fileconvert():
     # doc - txt
     elif ("." + source_type).lower() == TYPE_DOC.lower() and ("." + end_type).lower() == TYPE_TXT.lower():
         return docx_to_txt(file_path, file_name)
+    # XLS,XLSX - PDF
+    elif ("." + source_type).lower() in common_excel_formats and ("." + end_type).lower() == TYPE_PDF.lower():
+        return excel2pdf(file_path, file_name)
     return jsonify({"success": False, "msg": "暂不支持"})
 
 
