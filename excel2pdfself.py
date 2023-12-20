@@ -4,8 +4,6 @@ from flask import jsonify
 
 from fileutils import get_file_name_no_extension
 
-doc1 = ".doc"
-doc2 = ".docx"
 TYPE_PDF = ".pdf"
 TYPE_XLS = ".xls"
 TYPE_XLSX = ".xlsx"
@@ -29,13 +27,12 @@ def excel2pdf(file_path, file_name):
         print("Conversion from DOCX to PDF completed successfully.")
         re = {"file": pdf_path, "success": True}
         return jsonify(re)
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         print("An error occurred during the conversion: ", e)
-
 
 # 调用函数
 # pdf_to_excel('input.pdf', 'output.xlsx')
 # C:\Users\39435\Desktop\a.xls
-if __name__ == '__main__':
-    excel2pdf('C:\\Users\\39435\\Desktop\\a.xls', 'C:\\Users\\39435\\Desktop\\a.pdf')
-    # excel_to_pdf2('C:\\Users\\39435\\Desktop\\a.xlsx', 'C:\\Users\\39435\\Desktop\\a.pdf')
+# if __name__ == '__main__':
+#     excel2pdf('C:\\Users\\39435\\Desktop\\a.xls', 'C:\\Users\\39435\\Desktop\\a.pdf')
+# excel_to_pdf2('C:\\Users\\39435\\Desktop\\a.xlsx', 'C:\\Users\\39435\\Desktop\\a.pdf')
