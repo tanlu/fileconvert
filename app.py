@@ -21,6 +21,7 @@ TYPE_PDF = ".pdf"
 TYPE_TXT = '.txt'
 TYPE_XLS = ".xls"
 TYPE_XLSX = ".xlsx"
+TYPE_CSV = ".csv"
 common_excel_formats = [TYPE_XLS, TYPE_XLSX]
 # 常用的图片格式
 common_image_formats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.ico', '.ppm', '.pgm',
