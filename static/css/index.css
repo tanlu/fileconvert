@@ -23,8 +23,10 @@ body {
 	font-weight: bold;
 }
 
-#jz {
+#jz > a {
 	margin-right: 25px;
+	color: #ecf0f1;
+	font-size: 30px;
 }
 
 #main {
@@ -152,6 +154,6 @@ body {
 	/* Add some margin between the select and the labels */
 }
 
-#center_tip {
+#center_tip{
 	margin-bottom: 20px;
 }
