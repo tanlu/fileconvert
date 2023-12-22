@@ -3,7 +3,6 @@ import os
 from flask import jsonify
 from pdf2docx import Converter
 from fileutils import get_file_extension, get_file_name_no_extension, get_file_name_with_extension
-import MyLogger
 
 UPLOAD_FOLDER = '/data/file/'  # 设置文件上传的目标文件夹
 wpath = "D:/test/"
@@ -15,15 +14,12 @@ pdf1 = ".pdf"
 img1 = ".png"
 img2 = ".jpeg"
 
-my_logger = MyLogger()
-
 
 #  ===================================pdf - docx===================================
 def convertPdf2Docx(file_path, file_name):
     try:
         filePath = pdf2Docx(file_path, file_name)
     except Exception as e:
-        my_logger.log_error('遇到错误:')
         return {"file": '转换异常', "success": False}
     re = {"file": filePath, "success": True}
     return jsonify(re)

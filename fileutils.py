@@ -1,3 +1,4 @@
+import os
 from pathlib import PurePath
 
 
@@ -31,3 +32,11 @@ def get_file_name_no_extension(file_path):
     file_name_without_extension = file_name_with_extension.rsplit('.', 1)[0]
 
     return file_name_without_extension
+
+
+# 全路径下转换后缀
+def change_file_extension(file_path, new_extension):
+    path, old_filename = os.path.split(file_path)
+    new_filename = os.path.splitext(old_filename)[0] + new_extension
+    new_file_path = os.path.join(path, new_filename)
+    return new_file_path
