@@ -23,6 +23,9 @@ body {
 	font-weight: bold;
 }
 
+#jz{
+    margin-right:30px
+}
 #jz > a {
 	margin-right: 25px;
 	color: #ecf0f1;

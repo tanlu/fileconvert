@@ -35,6 +35,16 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/skm', methods=['GET'])
+def skm():
+    return render_template('skm.html')
+
+
+@app.route('/concacts', methods=['GET'])
+def concacts():
+    return render_template('concacts.html')
+
+
 @app.route('/test', methods=['GET'])
 def test():
     return jsonify({'success': 'test'})
