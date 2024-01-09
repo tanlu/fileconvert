@@ -1,0 +1,120 @@
+
+
+var kxData = {
+    imgStar : '', // 星图片
+    imgServer : '', // 星图片
+    imgDated : '', // 星图片
+    dated:false,// true 为过期
+    h:null,// 链接中参数高度h
+    url:''//跳转url
+};
+kxData.imgStar ='https://rr.knet.cn/static/images/newLogo/star4.png';
+kxData.imgServer ='https://rr.knet.cn/static/images/newLogo/3Y4M.png';
+kxData.h ='30';
+kxData.url ='https://ss.knet.cn/verifyseal.dll?sn=e20081931010682203sysr000000&amp;pa=0.28299525820432947';
+(function(){
+    var logoAnimate = {
+        certImg1:null,
+        certImg2:null,
+        testClassName:function(ele, els){
+            return !!ele.className.match(new RegExp("(\\s|^)" + els + "(\\s|$)"));
+        },
+        replaceToNull:function(ele, els) {
+            this.testClassName(ele, els) || (ele.className += "" + els);
+        },
+        replaceToAct:function(ele, els) {
+            this.testClassName(ele, els) && (ele.className = ele.className.replace(new RegExp("(\\s|^)" + els + "(\\s|$)"), ""));
+        },
+        animateToNull:function(ele){
+            for (var i = 0; i <= 20; i++) ! function () {
+                timeOut1 = null,clearTimeout(timeOut1);
+                var num = 100-5*i;
+                timeOut1 = setTimeout(function(){
+                    ele.style.opacity = num / 100;
+                    ele.style.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity=' + num + ')';
+                }, 25 * i);
+            }();
+        },
+        animateToHave:function(ele){
+            ele.style.opacity = 0 / 100;
+            for (var j = 0; j <= 20; j++) ! function () {
+                timeOut2 = null,clearTimeout(timeOut2);
+                var num = 5*j;
+                timeOut2 = setTimeout(function(){
+                    ele.style.opacity = num / 100;
+                    ele.style.filter = 'progid:DXImageTransform.Microsoft.Alpha(opacity=' + num + ')';
+                }, 25 * j);
+            }();
+        },
+        getRndId:function(){
+            var that = this,length = 15;
+            for (var i = 0; i < 2; i++){
+                var rnd = Math.random().toString(36).substr(3,length),date = Date.now().toString(36);
+                !i ? that.certImg1 = rnd + date : that.certImg2 = rnd + date;
+            }
+        },
+        animateFlag:false,
+        initFun:function(){
+            var cert1 = document.getElementById(this.certImg1),cert2 = document.getElementById(this.certImg2);
+            this.testClassName(cert1, "act") ? (this.animateToNull(cert1), this.animateToHave(cert2), this.replaceToAct(cert1, "act"), this.replaceToNull(cert2, "act")) : (this.replaceToNull(cert1, "act"), this.replaceToAct(cert2, "act"), this.animateToNull(cert2), this.animateToHave(cert1));
+        },
+        animationInitHave:function(imgUrl1,imgUrl2){
+            var that = this,imgHeight = 0,imgWidth = 0;
+            if (kxData.h) {
+                imgHeight = Math.abs(kxData.h);
+            } else {
+                imgHeight = 47;
+            }
+            imgWidth = Math.ceil(imgHeight*(418/150));
+            var _widthHeightCssHtml = 'width:' + imgWidth + 'px !important;height:' + imgHeight + 'px !important;',
+                _spanCssHtml = 'position: relative !important;display: inline-block !important;'+ _widthHeightCssHtml,
+                _aCssHtml = 'display:inline-block !important;'+ _widthHeightCssHtml,
+                _imgCssHtml = 'display:block !important;'+ _widthHeightCssHtml +'position:absolute !important;top:0 !important;left:0 !important;border:none !important;';
+            var html = '<span style="'+_spanCssHtml+'"><a href="' + kxData.url + '" oncontextmenu="return false;" style="'+_aCssHtml+'" target="_blank">\
+            <img id="'+ logoAnimate.certImg1 +'" class="act" height="'+ imgHeight +'px" alt="可信网站" style="'+_imgCssHtml+'opacity: 1;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);" src="'+ imgUrl1 +'">\
+            <img id="'+ logoAnimate.certImg2 +'" class="" height="'+ imgHeight +'px" alt="可信网站" style="'+_imgCssHtml+'opacity: 0;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" src="'+ imgUrl2 +'">\
+            </a></span>',
+            scriptDom = document.getElementById('kXScript');
+            scriptDom ? this.insertAfter(html, scriptDom) : document.write(html);
+            that.animateFlag = true;
+        },
+        insertAfter: function (newElement, targetElement) {
+            var parent = targetElement.parentNode;
+            if (parent.lastChild == targetElement) {
+                if(typeof newElement === 'string'){
+                    var temp = document.createElement('div');
+                    temp.innerHTML = newElement;
+                    var frag = document.createDocumentFragment();
+                    while (temp.firstChild) {
+                        frag.appendChild(temp.firstChild);
+                    }
+                    parent.appendChild(frag);
+                }else{
+                    parent.appendChild(newElement);
+                }
+            } else {
+                if(typeof newElement === 'string'){
+                    var temp = document.createElement('div');
+                    temp.innerHTML = newElement;
+                    var frag = document.createDocumentFragment();
+                    while (temp.firstChild) {
+                        frag.appendChild(temp.firstChild);
+                    }
+                    parent.insertBefore(frag, targetElement.nextSibling);
+                }else{
+                    parent.insertBefore(newElement, targetElement.nextSibling);
+                }
+            }
+        }
+    };
+    logoAnimate.getRndId();
+    var imgUrl1 = kxData.imgStar,imgUrl2 = null,timeOut1 = null,timeOut2 = null,set = null;
+    !kxData.dated ? imgUrl2 = kxData.imgServer : imgUrl2 = kxData.imgDated;
+    logoAnimate.animationInitHave(imgUrl1,imgUrl2);
+    if (logoAnimate.animateFlag) {
+        set = window.setInterval(function(){
+            set = null, clearInterval(set);
+            logoAnimate.initFun();
+        },3e3);
+    }
+})();
